@@ -75,6 +75,42 @@ HANDLER_OPERATIONS = {
         {"evaluation_set": "held_out", "tiny": True, "agents": 5},
     ),
     "sign_off_claim": ("POST", "/api/claims/CLM-1002/sign-off", None),
+    "start_audit": ("POST", "/api/audits", None),
+    "list_audits": ("GET", "/api/audits", None),
+    "get_audit": ("GET", "/api/audits/audit-1", None),
+    "get_audit_scorecard": ("GET", "/api/audit-scorecard", None),
+    "get_audit_claim": ("GET", "/api/audit-claims/CLM-1002", None),
+    "write_up_finding": (
+        "POST",
+        "/api/audits/audit-1/findings/1/write-up",
+        {"narrative": "For review."},
+    ),
+    "set_aside_finding": (
+        "POST",
+        "/api/audits/audit-1/findings/1/set-aside",
+        {"reason": "Dismissed before."},
+    ),
+    "answer_finding": (
+        "POST",
+        "/api/audits/audit-1/findings/1/answer",
+        {"answer": "dismiss", "reason": "Fine."},
+    ),
+    "record_audit_step": (
+        "POST",
+        "/api/audits/audit-1/steps",
+        {"tool": "t", "input": "i", "status": "done", "answer": "a"},
+    ),
+    "pause_audit": (
+        "POST",
+        "/api/audits/audit-1/pause",
+        {"finding_id": 1, "model_calls": 1, "cost": 0.0},
+    ),
+    "finish_audit": (
+        "POST",
+        "/api/audits/audit-1/finish",
+        {"model_calls": 1, "cost": 0.0},
+    ),
+    "fail_audit": ("POST", "/api/audits/audit-1/failure", {"reason": "It broke."}),
     "send_back_claim": (
         "POST",
         "/api/claims/CLM-1002/send-back",

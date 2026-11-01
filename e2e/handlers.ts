@@ -13,6 +13,12 @@ export const HANDLERS = {
     email: "dana.whitfield@undercover.example",
     storage: "e2e/.auth/dana.json",
   },
+  elena: {
+    handler_id: "HND-04",
+    name: "Elena Marsh",
+    email: "elena.marsh@undercover.example",
+    storage: "e2e/.auth/elena.json",
+  },
   marcus: {
     handler_id: "HND-02",
     name: "Marcus Oyelaran",

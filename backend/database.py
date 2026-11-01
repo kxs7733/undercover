@@ -123,6 +123,7 @@ handlers = Table(
     Column("role", Text, nullable=False),
     Column("email", Text, nullable=False, unique=True),
     Column("can_approve_over_limit", Boolean, nullable=False),
+    Column("can_audit", Boolean, nullable=False),
 )
 customers = Table(
     "customers",
@@ -188,6 +189,55 @@ decisions = Table(
     Column("signed_off_at", Text),
     # Why the Gateway refused to pay an approval, which then waits for sign-off.
     Column("gateway_refusal", Text),
+)
+# The Auditor's audits, what its checks found on each, and the steps it took.
+audits = Table(
+    "audits",
+    metadata,
+    Column("audit_id", Text, primary_key=True),
+    Column("started_by", Text, nullable=False),
+    Column("status", Text, nullable=False),
+    Column("started_at", Text, nullable=False),
+    # When the Auditor last spoke of the audit.
+    Column("heard_at", Text, nullable=False),
+    Column("finished_at", Text),
+    Column("summary", Text),
+    Column("failure", Text),
+    Column("model_calls", Integer, nullable=False),
+    Column("cost", Float, nullable=False),
+    Column("waiting_on", Integer),
+)
+audit_findings = Table(
+    "audit_findings",
+    metadata,
+    Column("finding_id", Integer, primary_key=True),
+    Column("audit_id", Text, ForeignKey("audits.audit_id"), nullable=False),
+    Column("check_name", Text, nullable=False),
+    Column("subject", Text, nullable=False),
+    Column("subject_name", Text, nullable=False),
+    Column("fingerprint", Text, nullable=False),
+    Column("score", Integer, nullable=False),
+    Column("needs_decision", Boolean, nullable=False),
+    Column("claim_ids", JSON, nullable=False),
+    Column("exposure", Float, nullable=False),
+    Column("evidence", JSON, nullable=False),
+    Column("narrative", Text, nullable=False),
+    Column("written_by_model", Boolean, nullable=False),
+    Column("status", Text, nullable=False),
+    Column("answer_reason", Text),
+    Column("answered_by", Text),
+    Column("answered_at", Text),
+)
+audit_steps = Table(
+    "audit_steps",
+    metadata,
+    Column("step_id", Integer, primary_key=True),
+    Column("audit_id", Text, ForeignKey("audits.audit_id"), nullable=False),
+    Column("tool", Text, nullable=False),
+    Column("input", Text, nullable=False),
+    Column("status", Text, nullable=False),
+    Column("answer", Text, nullable=False),
+    Column("at", Text, nullable=False),
 )
 # The decisions handlers sent back to the agent, each with its note, who sent it
 # back and when.
@@ -642,6 +692,7 @@ def seed(db: Engine) -> dict[str, int]:
                     "role": h["role"],
                     "email": h["email"],
                     "can_approve_over_limit": h["can_approve_over_limit"],
+                    "can_audit": h["can_audit"],
                 }
                 for h in handler_rows
             ],
@@ -661,6 +712,7 @@ def seed(db: Engine) -> dict[str, int]:
         seed_first_version(connection)
         connection.execute(insert(recipes).values(**FIRST_RECIPE, created_at=now()))
         connection.execute(insert(locks).values(name=AGENTS_WORK))
+        connection.execute(insert(locks).values(name="audits"))
         labeled = seed_evaluations(connection)
     return {
         "claims": len(claim_rows),

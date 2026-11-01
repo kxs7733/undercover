@@ -1,4 +1,5 @@
 import { freshAccessToken } from "./auth";
+import type { Audit, FindingAnswer, Scorecard } from "./audit";
 import { post, request, send } from "./connection";
 import type {
   ConfirmationAnswer,
@@ -164,6 +165,7 @@ export interface Handler {
   role: string;
   email: string;
   can_approve_over_limit: boolean;
+  can_audit: boolean;
 }
 
 export interface Step {
@@ -496,7 +498,22 @@ const CONVERSATIONS = "/api/copilot/conversations";
 const conversationPath = (conversationId: string) =>
   `${CONVERSATIONS}/${encodeURIComponent(conversationId)}`;
 
+const AUDITS = "/api/audits";
+
 export const api = {
+  listAudits: () => request<Audit[]>(AUDITS),
+  getAuditScorecard: () => request<Scorecard>("/api/audit-scorecard"),
+  startAudit: () => post<Audit>(AUDITS),
+  answerFinding: (
+    auditId: string,
+    findingId: number,
+    answer: FindingAnswer,
+    reason: string,
+  ) =>
+    post<Audit>(
+      `${AUDITS}/${encodeURIComponent(auditId)}/findings/${String(findingId)}/answer`,
+      { answer, reason },
+    ),
   listClaims: () => request<ClaimSummary[]>(CLAIMS),
   getClaim: (claimId: string) => request<Claim>(claimPath(claimId)),
   listSteps: (claimId: string) =>

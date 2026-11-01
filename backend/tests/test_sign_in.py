@@ -30,6 +30,7 @@ def test_the_signed_in_handler(client):
         "role": "Senior Claims Handler",
         "email": DANA,
         "can_approve_over_limit": True,
+        "can_audit": False,
     }
 
 
@@ -94,7 +95,7 @@ def test_seeding_stores_each_handlers_email_and_who_can_sign_off_over_the_limit(
         (h["name"], h["email"], h["can_approve_over_limit"])
         for h in load("handlers.json")
     ]
-    assert [can for _, _, can in seeded] == [True, False, False]
+    assert [can for _, _, can in seeded] == [True, False, False, False]
 
 
 def test_the_public_keys_are_fetched_from_the_supabase_project():

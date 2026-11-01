@@ -9,6 +9,7 @@ export const SCOREBOARD = "/scoreboard";
 export const CONFIGURATION = "/configuration";
 export const VERSION_PAGE = `${CONFIGURATION}/versions/:number`;
 export const SETTINGS = "/settings";
+export const AUDIT = "/audit";
 export const IMPROVEMENT = "/improvement";
 export const RECIPE_PAGE = `${IMPROVEMENT}/recipes/:number`;
 export const CLAIM_PAGE = "/claims/:claimId";

@@ -15,7 +15,7 @@ from agent.copilot.memory import MEMORY_ID as COPILOT_MEMORY_ID
 from agent.direct import CONTEXT_URL
 from agent.gateway import GATEWAY_URL
 from agent.memory import MEMORY_ID
-from backend import agent_service, auth, copilot_service, judge
+from backend import agent_service, auditor_service, auth, copilot_service, judge
 from backend.dashboard import DashboardFiles
 from backend.dashboard import mount as dashboard_mount
 from backend.database import engine, seed
@@ -71,6 +71,7 @@ def no_aws(tmp_path, monkeypatch):
         agent_service.RUNTIME,
         copilot_service.COPILOT,
         copilot_service.RUNTIME,
+        auditor_service.AUDITOR,
     )
     on_runtime = [name for name in os.environ if name.startswith(identity.PREFIX)]
     for name in (*ours, *on_runtime, "AWS_PROFILE", "AWS_SESSION_TOKEN", "AWS_REGION"):

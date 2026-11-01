@@ -1,7 +1,7 @@
 """The shapes of the backend's requests and responses."""
 
 from enum import StrEnum
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import (
     AfterValidator,
@@ -278,6 +278,7 @@ class Handler(BaseModel):
     role: str
     email: str
     can_approve_over_limit: bool
+    can_audit: bool
 
 
 class Source(BaseModel):
@@ -1085,3 +1086,169 @@ class RunStarted(Accepted):
 
     run_id: str
     number: int
+
+
+class AuditStatus(StrEnum):
+    """Where an audit stands."""
+
+    WORKING = "working"
+    WAITING_FOR_DECISION = "waiting_for_decision"
+    DONE = "done"
+    FAILED = "failed"
+
+
+class FindingStatus(StrEnum):
+    """Where a finding stands: open, a case opened or dismissed by the manager, or
+    set aside because the manager dismissed the same pattern before."""
+
+    OPEN = "open"
+    CASE_OPENED = "case_opened"
+    DISMISSED = "dismissed"
+    SET_ASIDE = "set_aside"
+
+
+class FindingAnswer(StrEnum):
+    OPEN_CASE = "open_case"
+    DISMISS = "dismiss"
+
+
+class AuditFinding(BaseModel):
+    """A pattern the checks found, for review: every figure from the records, and
+    an explanation the code checked."""
+
+    finding_id: int
+    audit_id: str
+    check_name: str
+    subject: str
+    subject_name: str
+    fingerprint: str
+    score: int
+    needs_decision: bool
+    claim_ids: list[str]
+    exposure: float
+    evidence: dict[str, Any]
+    narrative: str
+    written_by_model: bool
+    status: FindingStatus
+    answer_reason: str | None
+    answered_by: str | None
+    answered_at: str | None
+
+
+class AuditStep(BaseModel):
+    step_id: int
+    audit_id: str
+    tool: str
+    input: str
+    status: str
+    answer: str
+    at: str
+
+
+class Audit(BaseModel):
+    audit_id: str
+    started_by: str
+    status: AuditStatus
+    started_at: str
+    finished_at: str | None
+    summary: str | None
+    failure: str | None
+    model_calls: int
+    cost: float
+    waiting_on: int | None
+    findings: list[AuditFinding]
+    steps: list[AuditStep]
+
+
+class AuditWriteUp(BaseModel):
+    narrative: Annotated[str, StringConstraints(min_length=1, max_length=800)]
+
+
+class AuditReasonRequest(BaseModel):
+    reason: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=500)
+    ]
+
+
+class AuditSetAsideRequest(BaseModel):
+    """Long enough for a manager's reason and the words that say it's from before."""
+
+    reason: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=600)
+    ]
+
+
+class FindingAnswerRequest(AuditReasonRequest):
+    answer: FindingAnswer
+
+
+class AuditStepRequest(BaseModel):
+    tool: str
+    input: str
+    status: str
+    answer: str
+
+
+class AuditPauseRequest(BaseModel):
+    finding_id: int
+    model_calls: int
+    cost: float
+
+
+class AuditFinishRequest(BaseModel):
+    model_calls: int
+    cost: float
+
+
+class AuditSentBack(BaseModel):
+    decision: DecisionKind
+    payout: float
+    sent_back_by: str
+    sent_back_at: str
+
+
+class AuditClaim(BaseModel):
+    """A queue claim's facts as the Auditor reads them: no story, document, reason,
+    note or other text the claim agent wrote, so a claim can't instruct it."""
+
+    claim_id: str
+    customer_id: str
+    customer_name: str
+    claim_type: str
+    submitted_on: str
+    amount_claimed: float
+    status: Status
+    decision: DecisionKind | None
+    payout: float | None
+    decided_at: str | None
+    paid: float | None
+    signed_off_by: str | None
+    signed_off_at: str | None
+    sent_back: list[AuditSentBack]
+
+
+class VersionLens(BaseModel):
+    """A version's accuracy and leniency across its finished evaluations, as figures
+    only."""
+
+    version: int
+    evaluations: int
+    claims: int
+    accuracy: float
+    lenient_share: float
+    strict_share: float
+    overpaid: float
+
+
+class HandlerLens(BaseModel):
+    name: str
+    sign_offs: int
+    paid: float
+    quick_sign_offs: int
+    send_backs: int
+    raised: int
+
+
+class Scorecard(BaseModel):
+    versions: list[VersionLens]
+    handlers: list[HandlerLens]

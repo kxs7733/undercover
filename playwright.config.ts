@@ -7,6 +7,7 @@ import {
   COPILOT_STAND_IN,
   DASHBOARD,
   JUDGE_STAND_IN,
+  NO_AUDITOR,
 } from "./e2e/servers";
 import { HANDLERS, TEST_PASSWORD } from "./e2e/handlers";
 
@@ -44,6 +45,7 @@ export default defineConfig({
         UNDERCOVER_AGENT_RUNTIME: "",
         UNDERCOVER_COPILOT: COPILOT_STAND_IN,
         UNDERCOVER_COPILOT_RUNTIME: "",
+        UNDERCOVER_AUDITOR: NO_AUDITOR,
         VITE_SUPABASE_URL: AUTH_STAND_IN,
         JUDGE_URL: JUDGE_STAND_IN,
         OPENROUTER_API_KEY: "e2e-key",

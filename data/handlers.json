@@ -4,20 +4,31 @@
     "name": "Dana Whitfield",
     "role": "Senior Claims Handler",
     "email": "dana.whitfield@undercover.example",
-    "can_approve_over_limit": true
+    "can_approve_over_limit": true,
+    "can_audit": false
   },
   {
     "handler_id": "HND-02",
     "name": "Marcus Oyelaran",
     "role": "Claims Handler",
     "email": "marcus.oyelaran@undercover.example",
-    "can_approve_over_limit": false
+    "can_approve_over_limit": false,
+    "can_audit": false
   },
   {
     "handler_id": "HND-03",
     "name": "Priya Raman",
     "role": "Claims Handler",
     "email": "priya.raman@undercover.example",
-    "can_approve_over_limit": false
+    "can_approve_over_limit": false,
+    "can_audit": false
+  },
+  {
+    "handler_id": "HND-04",
+    "name": "Elena Marsh",
+    "role": "Claims Operations Manager",
+    "email": "elena.marsh@undercover.example",
+    "can_approve_over_limit": false,
+    "can_audit": true
   }
 ]

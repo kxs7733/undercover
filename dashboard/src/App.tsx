@@ -2,6 +2,7 @@ import { Navigate, Outlet, Route, Routes } from "react-router";
 import { PageFrame } from "./components/PageFrame";
 import { RequireHandler } from "./components/RequireHandler";
 import { StateMessage } from "./components/StateMessage";
+import { AuditPage } from "./pages/AuditPage";
 import { ClaimPage } from "./pages/ClaimPage";
 import { ConfigurationPage } from "./pages/ConfigurationPage";
 import { EvaluationPage } from "./pages/EvaluationPage";
@@ -13,6 +14,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { SignInPage } from "./pages/SignInPage";
 import { VersionPage } from "./pages/VersionPage";
 import {
+  AUDIT,
   CLAIM_PAGE,
   CONFIGURATION,
   EVALUATION_PAGE,
@@ -48,6 +50,7 @@ export function App() {
         <Route path={CONFIGURATION} element={<ConfigurationPage />} />
         <Route path={VERSION_PAGE} element={<VersionPage />} />
         <Route path={SETTINGS} element={<SettingsPage />} />
+        <Route path={AUDIT} element={<AuditPage />} />
         <Route
           path={INSTRUCTIONS}
           element={<Navigate to={CONFIGURATION} replace />}

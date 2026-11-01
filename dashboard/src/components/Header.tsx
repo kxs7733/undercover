@@ -3,6 +3,7 @@ import { Link, NavLink, useMatch } from "react-router";
 import { HandlerContext } from "../handler";
 import {
   CLAIM_PAGE,
+  AUDIT,
   CONFIGURATION,
   IMPROVEMENT,
   QUEUE,
@@ -36,6 +37,7 @@ export function Header() {
           <NavLink to={SCOREBOARD}>Scoreboard</NavLink>
           <NavLink to={IMPROVEMENT}>Improvement</NavLink>
           <NavLink to={CONFIGURATION}>Configuration</NavLink>
+          {handler?.can_audit && <NavLink to={AUDIT}>Audit</NavLink>}
         </nav>
         {handler && (
           <div className="who" role="group" aria-label="Signed in">

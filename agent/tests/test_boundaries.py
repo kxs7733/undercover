@@ -26,7 +26,7 @@ def operations_out_of_reach() -> set[str]:
     return operations
 
 
-PACKAGES = ("agent", "agent.copilot")
+PACKAGES = ("agent", "agent.copilot", "agent.auditor")
 
 
 def tree_of(module: str) -> ast.Module:
@@ -184,3 +184,23 @@ def test_the_copilots_memory_uses_only_agentcore_memory():
     assert theirs == {"agentcore_memory"}
     for module in copilot_modules() - {"copilot.graph", "copilot.turns"}:
         assert "copilot.memory" not in imports_of(module), module
+
+
+def auditor_modules() -> set[str]:
+    return {f"auditor.{path.stem}" for path in (AGENT / "auditor").glob("*.py")}
+
+
+def test_only_the_auditors_api_on_the_app_uses_the_connection():
+    for module in auditor_modules() - {"auditor.app_api"}:
+        assert "connection" not in imports_of(module), module
+    assert "call_as" in names_from("auditor.app_api", "connection")
+
+
+def test_the_auditor_never_sends_the_agents_key():
+    assert "call" not in names_from("auditor.app_api", "connection")
+
+
+def test_nothing_else_in_the_agent_imports_the_auditor():
+    for module in agents_modules() | copilot_modules():
+        imported = imports_of(module)
+        assert {name for name in imported if name.startswith("auditor")} == set()

@@ -29,6 +29,7 @@ const dana: Handler = {
   role: "Senior Claims Handler",
   email: "dana.whitfield@undercover.example",
   can_approve_over_limit: true,
+  can_audit: false,
 };
 
 export const marcus: Handler = {
@@ -37,6 +38,7 @@ export const marcus: Handler = {
   role: "Claims Handler",
   email: "marcus.oyelaran@undercover.example",
   can_approve_over_limit: false,
+  can_audit: false,
 };
 
 const startingSettings: Settings = {

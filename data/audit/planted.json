@@ -1,0 +1,23 @@
+{
+  "planted": [
+    "linked_claimants:CUS-7001+CUS-7002+CUS-7003+CUS-7004",
+    "under_limit:CUS-7001+CUS-7002+CUS-7003+CUS-7004",
+    "repeat_claimant:CUS-7001",
+    "third_claim_unreferred:CLM-7003",
+    "send_back_raises:Jonah Albright",
+    "sign_off_pattern:Jonah Albright"
+  ],
+  "decoy_customers": [
+    "CUS-7101",
+    "CUS-7102",
+    "CUS-7103",
+    "CUS-7104",
+    "CUS-7105",
+    "CUS-7106",
+    "CUS-7107"
+  ],
+  "decoy_handlers": [
+    "Dana Whitfield"
+  ],
+  "injected_claim": "CLM-7006"
+}

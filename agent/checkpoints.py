@@ -21,8 +21,8 @@ CONNECTION_WAIT = 120
 OPEN_WAIT = 5
 
 
-def open_checkpoint_pool() -> Pool:
-    """Open the process's pool of at most CONNECTIONS connections to DATABASE_URL,
+def open_checkpoint_pool(connections: int = CONNECTIONS) -> Pool:
+    """Open the process's pool of at most so many connections to DATABASE_URL,
     where graphs save their progress in our own schema, set up once. It waits up to
     OPEN_WAIT seconds for its first connection, and a graph up to CONNECTION_WAIT
     seconds for one. Prepared statements are off, so it works through either of
@@ -36,7 +36,7 @@ def open_checkpoint_pool() -> Pool:
     pool = ConnectionPool[Connection[DictRow]](
         os.environ["DATABASE_URL"],
         min_size=1,
-        max_size=CONNECTIONS,
+        max_size=connections,
         timeout=CONNECTION_WAIT,
         kwargs=settings,
         open=True,

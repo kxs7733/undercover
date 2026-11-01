@@ -11,6 +11,7 @@ from mangum import Mangum
 from sqlalchemy import Connection, RowMapping, delete, insert, select, update
 
 from backend import agent_api, agent_service, dashboard
+from backend.audits import router as audits_router
 from backend.calculation import (
     attempts_calculation,
     clear_calculation,
@@ -114,6 +115,7 @@ app.include_router(runs)
 app.include_router(configuration)
 app.include_router(improvement)
 app.include_router(copilot)
+app.include_router(audits_router)
 app.include_router(customers_router)
 
 SignsOffOverTheLimit = Annotated[Handler, Depends(senior("sign this off"))]

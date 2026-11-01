@@ -9,6 +9,7 @@ The data behind UnderCover Travel Insurance, a fictional insurer. Everything her
 - `policies.json`: one policy per trip, with the plan, the add-ons, the purchase date, the trip and the travelers.
 - `customers.json`: contact details and claim history, with the date and a one line summary of each earlier claim. This is personal data.
 - `handlers.json`: the claims handlers, with the email each signs in with. Only Dana Whitfield (`dana.whitfield@undercover.example`) can sign off payouts over the limit, start and stop rounds, review the improver's proposals and change the settings; Marcus Oyelaran and Priya Raman can't.
+- `audit/`: the Auditor's planted scenario, `scenario.json`, which `npm run seed:audit` adds to a seeded database, and its answer key, `planted.json`, which nothing in the product reads. All of it is invented. `handlers.json` also holds the claims operations manager, Elena Marsh, the only handler who can audit.
 - `improvement.json`: the improver's settings to start with, from the lab: the objectives on the held-out set, the noise and the tolerance for accuracy, the grade, cost per claim and time per claim, the spending limit for each round and the claim agents at once in its evaluations.
 - `models.json`: the models the claim agent may use, with their reasoning efforts and prices in US dollars per million tokens.
 - `claims.json`: the claims queue, twenty-five claims. Each has the customer's story, the items claimed and the supporting documents as text.
