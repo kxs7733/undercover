@@ -6,7 +6,7 @@ Sending claims back and the agent on AgentCore Runtime, in `docs/PLAN_RUNTIME.md
 
 The Copilot in `docs/PLAN_COPILOT.md` is built: all six phases are done, and its live checks pass but one. Explaining why a held payout needs a handler, it drew on the claim, the agent's steps, the policy and the settings but never read the context layer itself, though its instructions set it that goal (see the known gaps and the last live run). The app keeps the Copilot's conversations, their turns and each turn's cards, and passes a handler's sign-in on to the Copilot with each message and each answer to a confirmation, on the laptop or on AgentCore Runtime in the conversation's session. The Copilot, `agent/copilot/`, is a hand-written LangGraph graph that works a turn as the handler who asked: it looks things up in the app and the context layer, starts dispatches and evaluations, sends held decisions back, and pauses a sign-off for the handler's confirmation, each step a card in the app. It waits for the work it starts in code, says what needs a handler, answers whether we meet the success criteria with a table written in code, and remembers each handler. It is an AgentCore app of its own, `agent/copilot/entrypoint.py`, which `npm run dev` serves on 127.0.0.1:8081 and `runtime/copilot.py` runs on AgentCore Runtime as the platform team's second runtime, `copilot`. Every signed-in page has the Copilot in a sidebar on the right. `docs/CODE_STANDARDS.md`, `docs/TECH_STACK.md` and `docs/PROCESS.md` describe the Copilot and the parts the two agents share.
 
-The Auditor in `docs/PLAN_AUDITOR.md` is built, and its live checks pass (see the last section). It runs on the laptop only, with no AWS: Supabase holds its checkpoints, findings and each manager's dismissals. `npm run seed` then `npm run seed:audit` set it up. Sign in as `elena.marsh@undercover.example`, whose Supabase Auth user must exist with `HANDLER_PASSWORD`, and open `/audit`.
+The Auditor in `docs/PLAN_AUDITOR.md` is built, and its live checks pass (see the last section). It runs on the laptop or on Render, with no AWS: Supabase holds its checkpoints, findings and each manager's dismissals. `npm run seed` then `npm run seed:audit` set it up. Sign in as `elena.marsh@undercover.example`, whose Supabase Auth user must exist with `HANDLER_PASSWORD`, and open `/audit`.
 
 ## Running it
 
@@ -278,3 +278,13 @@ On Supabase in Singapore, on the direct route, after `npm run seed`, `npm run se
 - **The model call limit:** one audit at 20 calls spent them reading claims, and 4 findings kept the code's line. The limit is now 40, and the next audit explained all 8 in 13 calls.
 - **Limits of this result:** the scenario was written by the same person who wrote the checks, so these figures show the checks work on known patterns, not how they'd do on real claims. The thresholds are judgment calls. The scorecard rests on five evaluated claims, whose accuracy read 100% in one run and 80% in the next. The check of an explanation can't verify a section number or the meaning of a sentence, only its figures, claims and words.
 - **Known issue:** stopping `npm run dev` can leave a process holding its port, so the next start exits with "Address already in use". Stop the leftover process first.
+
+## The Auditor on Render, November 1, 2026
+
+Four free web services in Singapore, created from `render.yaml`, on the same Supabase database as the laptop.
+
+- **Audit:** 6 of 6 planted patterns, 0 decoys, all 8 findings explained by the model, 0 refused, in 35 seconds and 12 model calls, for $0.0015.
+- **Across machines:** an audit paused on the laptop was resumed by the Auditor on Render, with 0 model calls and 0 steps redone.
+- **Memory:** dismissals made in the browser were set aside in later audits, on both.
+- **Others:** the Copilot answered "What needs me?" and the agent worked an evaluation of five tiny claims. Without a sign-in the app answers 401, and it refuses Dana the audits with a 403.
+- **Not tried on Render:** a restart of the Auditor's service during a pause; that was tested on the laptop. A free service sleeps after 15 minutes and takes about a minute to wake, while the app waits 10 seconds, so open each service's `/ping` before a demo.

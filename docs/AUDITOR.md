@@ -15,7 +15,7 @@ The capstone's extension, a local build. A claims operations manager needs to ju
 
 ## How it runs
 
-Local only, with no AWS. The Auditor is an AgentCore app of its own on 127.0.0.1:8082 with `npm run dev`, built like the Copilot, a hand-written `StateGraph` with a `PostgresSaver`, working with the manager's sign-in and never the agent's key, with at most 2 database connections, since Supabase's free plan allows 15. It is not deployed to AgentCore Runtime.
+With no AWS. The Auditor is an AgentCore app of its own on 127.0.0.1:8082 with `npm run dev`, built like the Copilot, a hand-written `StateGraph` with a `PostgresSaver`, working with the manager's sign-in and never the agent's key, with at most 2 database connections, since Supabase's free plan allows 15. It is not deployed to AgentCore Runtime: on the course's free route it runs on Render as a fourth free web service, from `render.yaml`, beside the app, the agent and the Copilot, with the same Supabase database.
 
 `npm run seed:audit` adds a planted scenario to a seeded database, with its answer key in `data/audit/planted.json`, which nothing in the product reads.
 
