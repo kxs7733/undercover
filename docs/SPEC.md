@@ -85,6 +85,16 @@ The UnderCover Copilot is an agent for our handlers, in a sidebar on every page 
 - Each step it takes shows as a card in the sidebar as it happens. Conversations are kept, each its handler's alone, so a handler picks one up later, a waiting sign-off included.
 - With its memory on, it remembers each handler's preferences and the facts they tell it, apart from the agent's memory of customers.
 
+## The Auditor
+
+The UnderCover Auditor is an agent for our claims operations manager, on an Audit page only they can use. It helps them judge how accurately the claim agent handles claims and see patterns across claims that nobody deciding one claim can see. `docs/AUDITOR.md` is its brief.
+
+- Code works out every figure: each agent version's accuracy and leniency against our handlers, as figures across its evaluations only, each handler's sign-offs and send-backs, and six checks: repeat claimants, linked claimants, payouts just under the limit, send-backs that raised a payout, sign-off patterns and third claims paid without referral.
+- The model only explains a finding. The app refuses an explanation that accuses anyone, names a claim outside the finding or gives a figure that isn't in the evidence, and a finding it never explains keeps a line written in code.
+- It sees records only: no customer's story or document, no reason or note, nothing the claim agent wrote as free text, and no contact details.
+- A finding with a risk score of 70 or more, or paid more than the approval limit, waits for the manager to open a case or dismiss it, with a reason. A case goes to the Special Investigations Unit. Nothing is said to a customer, held or paid, and the manager can't decide a finding about themselves.
+- It remembers each manager's dismissals, and the app holds the record of them. A dismissed pattern is set aside until it reaches a claim they haven't seen.
+
 ## Rules
 
 - Our handlers sign in with their email and password. Every page needs a signed-in handler, and the system checks the handler on every action they take.

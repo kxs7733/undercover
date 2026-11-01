@@ -401,6 +401,8 @@ locks = Table(
     Column("taken_at", Text),
 )
 AGENTS_WORK = "the agent's work"
+# Audits start one at a time.
+AUDITS_LOCK = "audits"
 # The judge's grade of each copy in an evaluation, empty when it couldn't grade it.
 grades = Table(
     "grades",
@@ -712,7 +714,7 @@ def seed(db: Engine) -> dict[str, int]:
         seed_first_version(connection)
         connection.execute(insert(recipes).values(**FIRST_RECIPE, created_at=now()))
         connection.execute(insert(locks).values(name=AGENTS_WORK))
-        connection.execute(insert(locks).values(name="audits"))
+        connection.execute(insert(locks).values(name=AUDITS_LOCK))
         labeled = seed_evaluations(connection)
     return {
         "claims": len(claim_rows),

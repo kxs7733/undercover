@@ -215,3 +215,19 @@ it("keeps asking only while an audit works, and reads evidence as words", () => 
     ["link kinds", "shared phone"],
   ]);
 });
+
+it("says when a finding is about the manager", async () => {
+  asManager([
+    {
+      ...waiting,
+      waiting_on: null,
+      findings: [{ ...finding, subject: "Elena Marsh" }],
+    },
+  ]);
+  renderAt("/audit");
+  expect(
+    await screen.findByText(
+      "This finding is about you, so someone else must decide it.",
+    ),
+  ).toBeDefined();
+});

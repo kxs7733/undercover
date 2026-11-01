@@ -16,35 +16,35 @@ The auditor uses, of the rest of the agent, only the shared modules the Copilot 
 
 ## Phase 1: the planted scenario
 
-- [ ] `data/handlers.json` has the manager, and `can_audit` on every handler
-- [ ] `npm run seed:audit` adds the ring, the second senior handler and the decoys
-- [ ] Every scenario claim reads through the app's claim view
-- [ ] Evaluation sets and the dispatch's waiting claims are untouched
+- [x] `data/handlers.json` has the manager, and `can_audit` on every handler
+- [x] `npm run seed:audit` adds the ring, the second senior handler and the decoys
+- [x] Every scenario claim reads through the app's claim view
+- [x] Evaluation sets and the dispatch's waiting claims are untouched
 
 ## Phase 2: the backend
 
-- [ ] Each check finds its planted pattern and no decoy, in tests
-- [ ] Only the manager can read or act; the agent's key is refused
-- [ ] No route gives the Auditor a story, a document, a reason, a note or contact details
-- [ ] An explanation with a number outside the evidence, or an accusing word, is refused
-- [ ] The manager can't decide a finding about themselves
+- [x] Each check finds its planted pattern and no decoy, in tests
+- [x] Only the manager can read or act; the agent's key is refused
+- [x] No route gives the Auditor a story, a document, a reason, a note or contact details
+- [x] An explanation with a number outside the evidence, or an accusing word, is refused
+- [x] The manager can't decide a finding about themselves
 
 ## Phase 3: the agent
 
-- [ ] The graph explains, pauses, and resumes on a freshly built graph with nothing redone
-- [ ] A dismissal is remembered, and a later audit sets the pattern aside
-- [ ] The sign-in is never saved, and the agent's key never sent
-- [ ] A model call limit or a refused explanation still ends with the code's line
-- [ ] The app answers `{"operation": "health"}`
+- [x] The graph explains, pauses, and resumes on a freshly built graph with nothing redone
+- [x] A dismissal is remembered, and a later audit sets the pattern aside
+- [x] The sign-in is never saved, and the agent's key never sent
+- [x] A model call limit or a refused explanation still ends with the code's line
+- [x] The app answers `{"operation": "health"}`
 
 ## Phase 4: the dashboard
 
-- [ ] An Audit page for the manager, and a refusal for anyone else
-- [ ] Scorecard, findings, evidence and the decision card, in light and dark
-- [ ] Vitest and end-to-end tests
+- [x] An Audit page for the manager, and a refusal for anyone else
+- [x] Scorecard, findings, evidence and the decision card, in light and dark
+- [x] Vitest and end-to-end tests
 
 ## Phase 5: the live run
 
-- [ ] A real audit on Supabase with a restart during the pause
-- [ ] Results reported against every target in `docs/AUDITOR.md`
-- [ ] `docs/` describe the product as it now is
+- [x] A real audit on Supabase with a restart during the pause
+- [x] Results reported against every target in `docs/AUDITOR.md`
+- [x] `docs/` describe the product as it now is

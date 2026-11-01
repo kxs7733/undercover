@@ -2398,6 +2398,15 @@ fieldset.panel legend + * {
   flex: 1 1 auto;
 }
 
+.audit-finding-head .chip {
+  background: var(--inset);
+  color: var(--ink);
+}
+
+.audit-finding p {
+  margin: 8px 0;
+}
+
 .audit-evidence {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));

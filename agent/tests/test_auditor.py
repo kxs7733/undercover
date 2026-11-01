@@ -346,3 +346,16 @@ def test_the_ai_reply_is_not_kept_as_a_figure(auditor):
     run.start()
     audit = run.work_it()
     assert "123,456" not in json.dumps(audit)
+
+
+def test_a_remembered_dismissal_the_app_has_no_record_of_doesnt_stop_the_audit(auditor):
+    run = auditor("All explained.")
+    audit = run.start()
+    first = audit["findings"][0]
+    memory.remember_dismissal(
+        run.store, "HND-04", first["fingerprint"], "After a reseed", first["claim_ids"]
+    )
+    audit = run.work_it()
+    assert audit["status"] == "waiting_for_decision"
+    assert audit["findings"][0]["status"] == "open"
+    assert "search_memory" in [s["tool"] for s in audit["steps"]]

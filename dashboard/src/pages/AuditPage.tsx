@@ -176,7 +176,7 @@ function LatestAudit({
 }: Readonly<{ audit: Audit; onAnswered: () => void }>) {
   return (
     <section aria-label="Latest audit">
-      <div className="panel audit-panel">
+      <div className="panel audit-panel" aria-live="polite">
         <h2>Latest audit</h2>
         <p>
           Started by {audit.started_by} on {dateTime(audit.started_at)}.{" "}
@@ -228,6 +228,9 @@ function FindingCard({
   onAnswered: () => void;
 }>) {
   const title = CHECK_TITLES[finding.check_name] ?? finding.check_name;
+  const handler = useHandler();
+  const aboutYou =
+    finding.status === "open" && finding.subject === handler.name;
   return (
     <article
       className={`panel audit-panel audit-finding${waiting ? " waiting" : ""}`}
@@ -262,6 +265,11 @@ function FindingCard({
           {finding.answer_reason}
         </p>
       )}
+      {aboutYou && (
+        <p className="not-allowed">
+          This finding is about you, so someone else must decide it.
+        </p>
+      )}
       {waiting && <Decision finding={finding} onAnswered={onAnswered} />}
     </article>
   );
@@ -277,9 +285,10 @@ function Decision({
   );
   const ready = reason.trim() !== "" && !answer.sending;
   function send(given: FindingAnswer) {
+    // Reloads whatever came back: a timed-out answer may have gone through.
     if (ready)
-      void answer.run(given).then((done) => {
-        if (done) onAnswered();
+      void answer.run(given).finally(() => {
+        onAnswered();
       });
   }
   return (
@@ -295,6 +304,7 @@ function Decision({
           }}
         />
       </label>
+      <p className="muted small">Say why to open a case or dismiss it.</p>
       <div className="audit-decision-buttons">
         <button
           type="button"

@@ -18,6 +18,7 @@ from backend import audit_checks, audit_writeups, auditor_service, scoreboard, s
 from backend.asking import commit_and_ask
 from backend.audit_checks import Ledger, LedgerClaim, LedgerSendBack
 from backend.database import (
+    AUDITS_LOCK,
     audit_findings,
     audit_steps,
     audits,
@@ -76,8 +77,6 @@ NOT_OPEN = "This finding has been decided"
 STOPPED = "The Auditor stopped answering. Start another audit."
 # An audit the Auditor hasn't spoken of for this long has stopped.
 STOPPED_AFTER = timedelta(minutes=10)
-# Audits start one at a time.
-AUDITS_LOCK = "audits"
 
 
 def manager(handler: SignedIn) -> Handler:
@@ -364,9 +363,13 @@ def handler_lenses(db: Connection) -> list[HandlerLens]:
                     for c in signed
                 ),
                 send_backs=len(sent),
-                raised=sum(
-                    s.claim_id in now_paid and now_paid[s.claim_id].payout > s.payout
-                    for s in sent
+                raised=len(
+                    {
+                        s.claim_id
+                        for s in sent
+                        if s.claim_id in now_paid
+                        and now_paid[s.claim_id].payout > s.payout
+                    }
                 ),
             )
         )

@@ -21,16 +21,16 @@ Local only, with no AWS. The Auditor is an AgentCore app of its own on 127.0.0.1
 
 ## Success targets, set before the build
 
-| Measure | Target |
-|---|---|
-| Planted patterns found | All of them |
-| Decoys wrongly flagged | At most 1 |
-| Figures written by the model that aren't in the evidence | 0 |
-| Accusing words, or contact details reaching the model | 0 |
-| An injected story changes the result | Never |
-| A pause survives a restart with nothing redone | Yes |
-| Cost of an audit | Under $0.50 |
-| `npm run check` | Green, with `TZ=America/New_York` |
+| Measure                                                  | Target                            |
+| -------------------------------------------------------- | --------------------------------- |
+| Planted patterns found                                   | All of them                       |
+| Decoys wrongly flagged                                   | At most 1                         |
+| Figures written by the model that aren't in the evidence | 0                                 |
+| Accusing words, or contact details reaching the model    | 0                                 |
+| An injected story changes the result                     | Never                             |
+| A pause survives a restart with nothing redone           | Yes                               |
+| Cost of an audit                                         | Under $0.50                       |
+| `npm run check`                                          | Green, with `TZ=America/New_York` |
 
 ## Not for now
 

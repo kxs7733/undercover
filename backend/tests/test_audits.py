@@ -483,3 +483,58 @@ def test_every_check_has_a_line_of_its_own():
     checks = {d.split(":")[0] for d in PLANTED["planted"]}
     assert checks == set(audit_writeups.LINES)
     assert audits_table.name == "audits"
+
+
+def test_a_dismissal_doesnt_cover_a_claim_added_since(client, scenario, asked):
+    audit = started(client, asked)
+    finding = next(f for f in audit["findings"] if f["check_name"] == "repeat_claimant")
+    with engine().begin() as db:
+        db.execute(
+            update(audits.audit_findings)
+            .where(audits.audit_findings.c.finding_id == finding["finding_id"])
+            .values(
+                status="dismissed", answered_by="Elena Marsh", claim_ids=["CLM-7001"]
+            )
+        )
+        db.execute(update(audits_table).values(status="done"))
+    again = started(client, asked)
+    same = next(f for f in again["findings"] if f["check_name"] == "repeat_claimant")
+    path = f"/api/audits/{again['audit_id']}/findings/{same['finding_id']}/set-aside"
+    refused = manager(client, "POST", path, json={"reason": "Before"})
+    assert refused.status_code == 409
+
+
+@pytest.mark.parametrize(
+    "narrative",
+    [
+        "Five approvals across fifty claims.",
+        "Paid 2k.",
+        "They stole it.",
+        "It was done on  purpose.",
+        "Clear fr\u200baud here.",
+        "x" * 801,
+    ],
+)
+def test_more_ways_round_the_check_are_refused(narrative):
+    assert audit_writeups.why_refused(narrative, {"raises": 2}, ["CLM-1", "CLM-2"])
+
+
+def test_counts_in_words_that_the_evidence_holds_stand():
+    narrative = "Nine approvals on two claims, within twelve months, for review."
+    evidence = {"approvals": 9}
+    assert audit_writeups.why_refused(narrative, evidence, ["CLM-1", "CLM-2"]) is None
+
+
+def test_a_claim_sent_back_twice_counts_once_on_the_scorecard(client, scenario):
+    with engine().begin() as db:
+        rows = db.execute(
+            select(sent_back_decisions).where(
+                sent_back_decisions.c.claim_id == "CLM-7005"
+            )
+        ).mappings()
+        again = dict(next(iter(rows)))
+        again.pop("sent_back_id")
+        db.execute(insert(sent_back_decisions).values(again))
+    card = manager(client, "GET", "/api/audit-scorecard").json()
+    jonah = next(h for h in card["handlers"] if h["name"] == "Jonah Albright")
+    assert (jonah["send_backs"], jonah["raised"]) == (3, 2)

@@ -39,7 +39,7 @@ from agent.openrouter import usage_of
 from agent.refusals import REFUSED
 from agent.routes import GatewayRefused
 
-AUDIT_MODEL_CALLS = 20
+AUDIT_MODEL_CALLS = 40
 SET_ASIDE = "set_aside"
 AGENT = "agent"
 TOOLS = "tools"
@@ -48,6 +48,7 @@ CONFIRM = "confirm"
 RECORD_ANSWER = "record_answer"
 DONE, REFUSED_STEP, FAILED = "done", "refused", "failed"
 WRITE_UP = "write_up_finding"
+SEARCH_MEMORY = "search_memory"
 START_AUDIT = "Please explain each of this audit's findings."
 DISMISSED_BEFORE = "You dismissed this pattern before: {reason}"
 # The most of a step the manager's page keeps.
@@ -86,11 +87,24 @@ def set_aside(state: AuditorState, runtime: Runtime[AuditorContext]) -> dict[str
             and set(finding["claim_ids"]) <= set(before["claim_ids"])
         ):
             reason = DISMISSED_BEFORE.format(reason=before["reason"])
-            app_api.set_aside(
-                context.sign_in, context.audit_id, finding["finding_id"], reason
-            )
-            record_step(context, "search_memory", finding["fingerprint"], DONE, reason)
+            set_aside_if_the_app_agrees(context, finding, reason)
     return {"messages": [HumanMessage(START_AUDIT)]}
+
+
+def set_aside_if_the_app_agrees(
+    context: AuditorContext, finding: dict[str, Any], reason: str
+) -> None:
+    """Ask the app to set a finding aside. The app holds the record: when it has no
+    such dismissal, as after a reseed, the finding stays open and the audit goes on."""
+    fingerprint = finding["fingerprint"]
+    try:
+        app_api.set_aside(
+            context.sign_in, context.audit_id, finding["finding_id"], reason
+        )
+    except app_api.Refused as refused:
+        record_step(context, SEARCH_MEMORY, fingerprint, REFUSED_STEP, refused.detail)
+        return
+    record_step(context, SEARCH_MEMORY, fingerprint, DONE, reason)
 
 
 def record_step(

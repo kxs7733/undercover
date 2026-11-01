@@ -1161,7 +1161,9 @@ class Audit(BaseModel):
 
 
 class AuditWriteUp(BaseModel):
-    narrative: Annotated[str, StringConstraints(min_length=1, max_length=800)]
+    """Its length is checked with the rest of the explanation, in the app's words."""
+
+    narrative: Annotated[str, StringConstraints(min_length=1)]
 
 
 class AuditReasonRequest(BaseModel):

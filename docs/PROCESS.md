@@ -15,6 +15,8 @@ The checks need no network and never read `.env`: the tests use SQLite, a stub m
 
 The pre-commit hook runs the format, lint, type and unit test checks on every commit.
 
+`npm run seed:audit` adds the Auditor's planted scenario to a seeded database. `npm run check` assumes a US time zone: one dashboard test fails in Singapore's, so run it with `TZ=America/New_York`.
+
 ## Planning
 
 When asked to plan, as in "Please plan the pilot", write the plan to `docs/PLAN.md` and write no code.
