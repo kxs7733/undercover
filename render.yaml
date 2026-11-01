@@ -1,0 +1,82 @@
+# The free route on Render: the app, the agent, the Copilot and the Auditor, each a
+# free web service in Singapore beside the Supabase project. Render asks once for
+# each value marked sync: false. The VITE_ values are public by design. Each
+# service's address follows its name, unless Render had to add a suffix.
+services:
+  - type: web
+    name: kx-undercover
+    runtime: python
+    plan: free
+    region: singapore
+    branch: kx-auditor-capstone
+    healthCheckPath: /api/health
+    buildCommand: uv sync --frozen --only-group server && npm ci --ignore-scripts && npm run build
+    startCommand: uv run --no-sync uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: UNDERCOVER_API_KEY
+        sync: false
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: UNDERCOVER_AGENT
+        value: https://kx-undercover-agent.onrender.com
+      - key: UNDERCOVER_COPILOT
+        value: https://kx-undercover-copilot.onrender.com
+      - key: UNDERCOVER_AUDITOR
+        value: https://kx-undercover-auditor.onrender.com
+
+  - type: web
+    name: kx-undercover-agent
+    runtime: python
+    plan: free
+    region: singapore
+    branch: kx-auditor-capstone
+    healthCheckPath: /ping
+    buildCommand: uv sync --frozen --only-group runtime --only-group context
+    startCommand: uv run --no-sync python -m context & uv run --no-sync uvicorn agent.entrypoint:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: UNDERCOVER_API_KEY
+        sync: false
+      - key: UNDERCOVER_API
+        value: https://kx-undercover.onrender.com
+
+  - type: web
+    name: kx-undercover-copilot
+    runtime: python
+    plan: free
+    region: singapore
+    branch: kx-auditor-capstone
+    healthCheckPath: /ping
+    buildCommand: uv sync --frozen --only-group runtime --only-group context
+    startCommand: uv run --no-sync python -m context & uv run --no-sync uvicorn agent.copilot.entrypoint:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: UNDERCOVER_API
+        value: https://kx-undercover.onrender.com
+
+  - type: web
+    name: kx-undercover-auditor
+    runtime: python
+    plan: free
+    region: singapore
+    branch: kx-auditor-capstone
+    healthCheckPath: /ping
+    buildCommand: uv sync --frozen --only-group runtime --only-group context
+    startCommand: uv run --no-sync python -m context & uv run --no-sync uvicorn agent.auditor.entrypoint:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: UNDERCOVER_API
+        value: https://kx-undercover.onrender.com
